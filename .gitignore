@@ -1,0 +1,3 @@
+*.o
+stokes
+.DS_Store
