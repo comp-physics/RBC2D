@@ -77,7 +77,7 @@ CONTAINS
     del(2,1) = 0.; del(2,2) = 1.
 
 
-    open(1,file='./2DCell/stokes.in')
+    open(1,file='stokes.in')
     read(1,*) Nt
     read(1,*) dt
 

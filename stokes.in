@@ -1,16 +1,16 @@
-4000		Nt
-0.03  		dt
+4000    Nt
+0.03  	dt
 
-113 		which_ic
+114 		which_ic
 
 
-18		Nm
+25		Nm
 4		Nbfac
 25		Nf
-500              Nw
+500     Nw
 
-41.  20. 	Lb
-0.042		alpha
+41.  20.    Lb
+0.042	alpha
 180 180 64 64 387 192 512 512		NcP	
 0.5		rc
 
@@ -18,33 +18,33 @@
 1		lambda
 0.0		Ueps_in
 4.4		Umax 
-0     Nti
+0       Nti
 
 1.0		ro
 1.6		r1
 1.6		l0
-88.0		T0
-1.76		M0
-6.00		T1
+88.0	T0
+1.76	M0
+6.00	T1
 0.2		M1
 
 10		x_out
 100		s_out
 100		r_out
--100		f_out
+-100	f_out
 -1		D_out
 -1		th_out
--100            A_out 
-1000 		def_out
+-100    A_out 
+1000 	def_out
 
 80.		Sf
-0.15		sigma
+0.15	sigma
 10.		Sw
-0.0             Sa
+0.0     Sa
 
 0.2		dnl
 2.0		lfacdnl
 1.2		lfac
 20		inlist
 
--30000           iswitch
+-30000  iswitch

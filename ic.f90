@@ -43,20 +43,22 @@ CONTAINS
 
     select case (which_ic)
 
-     case(113)
-print*, 'pert ****', pert
-    Tc = T0; Mc = M0
-      ! if (Nm.ne.18) stop 'bad Nm'
-       do m = 1,Nm
-          do n = 1,1
-             call RANDOM_NUMBER(r)
-             do i = 1,Nb
-                th = 2.*Pi*REAL(i-1)/REAL(Nb)
-                X(1,i+Nb*(n - 1 + (m-1)*3)) = Lb/5.4*REAL(m-.5) + rad(n + (m-1)*5)*COS(th) + 0.2*(r-0.5)
-                X(2,i+Nb*(n - 1+ (m-1)*1)) = 2*rad(2)*SIN(th) - 0.8*(r-0.5) + Real(Lb(2))/2.
-             end do
-          end do
-       end do
+     ! case(113)
+! print*, 'pert ****', pert
+    ! Tc = T0; Mc = M0
+     !  ! if (Nm.ne.18) stop 'bad Nm'
+       ! do m = 1,Nm
+       !    do n = 1,1
+       !       call RANDOM_NUMBER(r)
+       !       do i = 1,Nb
+       !          th = 2.*Pi*REAL(i-1)/REAL(Nb)
+       !          X(1,i+Nb*(n - 1 + (m-1)*3)) = &
+       !              Lb/5.4*REAL(m-.5) + rad(n + (m-1)*5)*COS(th) + 0.2*(r-0.5)
+       !          X(2,i+Nb*(n - 1+ (m-1)*1)) = &
+       !              2*rad(2)*SIN(th) - 0.8*(r-0.5) + Real(Lb(2))/2.
+       !       end do
+       !    end do
+       ! end do
 
 !give one cell a large offset
 !        do i = 1,Nb
@@ -66,17 +68,17 @@ print*, 'pert ****', pert
 !        end do
 
         !dSow = Lb/REAL(Nw)
-      dSow = Lb(1)/(REAL(Nw))
-      !bottom wall
-       do i = 1,Nw
-          wX(1,i) = REAL(i-1)*dSow
-          wX(2,i) = 0.0
-       end do
+      !dSow = Lb(1)/(REAL(Nw))
+      !!bottom wall
+      ! do i = 1,Nw
+      !    wX(1,i) = REAL(i-1)*dSow
+      !    wX(2,i) = 0.0
+      ! end do
 
-       wDx(1,:) = dSow/Soe(2)
-       wDx(2,:) = 0.000
-       wD(:) = dSow/Soe(2)
-       X(:,Ns+1:Np) = wX
+      ! wDx(1,:) = dSow/Soe(2)
+      ! wDx(2,:) = 0.000
+      ! wD(:) = dSow/Soe(2)
+      ! X(:,Ns+1:Np) = wX
 
             case(114)
     Tc = T0; Mc = M0

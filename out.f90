@@ -14,10 +14,10 @@ CONTAINS
 
     character(50)         :: fn
 
-    write(fn,"('./2DCell/D/D.out.',I10.10)")lt
+    write(fn,"('D/D.out.',I10.10)")lt
     if (D_out.gt.0) open(D_unit,file=fn)
 
-    write(fn,"('./2DCell/D/th.out.',I10.10)")lt
+    write(fn,"('D/th.out.',I10.10)")lt
     if (th_out.gt.0) open(th_unit,file=fn)
 
 !!$    write(fn,"('D/def.out.',I10.10)")lt
@@ -78,14 +78,14 @@ CONTAINS
       end do
     end do
 
-    write(fn,"('./2DCell/D/restart.',I10.10)")lt
+    write(fn,"('./D/restart.',I10.10)")lt
     open(1,file=fn,form='UNFORMATTED')
     write(1)Np,Nb,Nm,lt
     write(1)t,rad,dSo,Soe,len0,Tc,Mc,wX,wDx,wD
     write(1)Xpert
     close(1)
 
-    write(fn,"('./2DCell/D/Newrestart.',I10.10)")lt
+    write(fn,"('./D/Newrestart.',I10.10)")lt
     open(1,file=fn,form='UNFORMATTED')
     write(1)Np,Nb,Nm,lt
     write(1)t,rad
@@ -104,121 +104,62 @@ CONTAINS
   SUBROUTINE xout(X,Xw,lt,t)
     real, dimension(2,Nb,Nm) :: X
     real, dimension(2,Nw)    :: Xw
-    integer                  :: lt
+    integer                  :: lt, i, m 
     real                     :: t
-
     real, dimension(2,Nb,Nm) :: Xe
+    character(50)            :: fn,fn2
+    real, dimension(Nb)      :: sum, sum2
 
-    character(50)         :: fn,fn2
-    integer               :: i,m
+     Xe = X
+     Xe(1,:,:) = Xe(1,:,:) - FLOOR( Xe(2,:,:)/Lb(2) )*MOD(Ueps*(t-T_sh_on),Lb(1))
 
-    real, dimension(Nb)   :: sum, sum2
+     !! write cell points
+     write(fn,"('./D/xeout.',I10.10)")lt
+     open(1,file=fn)
+     do m = 1,Nm
+        do i = 1,Nb
+           write(1,"(2F20.10)") Xe(:,i,m) - FLOOR(Xe(:,i,m)/Lb)*Lb
+        end do
+     end do
+     do i = 1,Nw
+        write(1,"(2F20.10)") Xw(:,i)
+     end do
+     close(1)
 
-!    print *,"X",X(1,1,1)
-    Xe = X
+     !! write wall points
+     write(fn,"('./D/wout.',I10.10)")lt
+     open(1,file=fn)
+     do i = 1,Nw
+        write(1,"(2F20.10)") Xw(:,i)
+     end do
+     close(1)
 
-!    print *,"UEPS",Ueps*(t-T_sh_on)
 
-    Xe(1,:,:) = Xe(1,:,:) - FLOOR( Xe(2,:,:)/Lb(2) )*MOD(Ueps*(t-T_sh_on),Lb(1))
-!    print *,"X",Xe(1,1,1)
-    write(fn,"('./2DCell/D/xeout.',I10.10)")lt
-    open(1,file=fn)
-    do m = 1,Nm
-       do i = 1,Nb
-          write(1,"(2F20.10)") Xe(:,i,m) - FLOOR(Xe(:,i,m)/Lb)*Lb
-       end do
-    end do
-    do i = 1,Nw
-       write(1,"(2F20.10)") Xw(:,i)
-    end do
-    close(1)
+    !write(fn,"('./D/qeout.',I10.10)")lt
+    !open(1,file=fn)
 
-!write wall points
-    write(fn,"('./2DCell/D/wout.',I10.10)")lt
-    open(1,file=fn)
-    do i = 1,Nw
-       write(1,"(2F20.10)") Xw(:,i)
-    end do
-    close(1)
-
-!write averages!
-    write(fn2,"('2DCell/D/zout.',I10.10)")lt
-    open(1,file=fn2)
-
-    do m = 1,Nm
-    sum=0
-    sum2=0
-       do i = 1,Nb
-        !sum = sum + Xe(:,i,m) - Floor( Xe(:,i,m)/Lb ) * Lb
-        sum = sum + Xe(:,i,m)
-       end do
-      sum2 = sum/Nb - Floor( sum/(Nb*Lb) ) * Lb
-    write(1,"(2F20.10)") sum2
-    end do
-    close(1)
-
-    write(fn,"('./2DCell/D/qeout.',I10.10)")lt
-    open(1,file=fn)
-
-    do m = 1,Nm
-          write(1,"(A)") "ZONE"
-       do i = 1,Nb
-          if (Abs( ( Xe(1,i,m) - Floor(Xe(1,i,m)/Lb(1))*Lb(1) ) - ( Xe(1,i-1,m) - Floor(Xe(1,i-1,m)/Lb(1))*Lb(1)) ) .gt. 10 ) Then
-            write(1,"(A)") "ZONE"
-          end if
-       write(1,"(2F20.10)") Xe(:,i,m) - FLOOR(Xe(:,i,m)/Lb)*Lb
-          if (i .eq. Nb) Then
-            write(1,"(2F20.10)") Xe(:,1,m) - FLOOR(Xe(:,1,m)/Lb)*Lb
-          end if
-       end do
-    end do
+    !do m = 1,Nm
+    !      write(1,"(A)") "ZONE"
+    !   do i = 1,Nb
+    !      if (Abs( ( Xe(1,i,m) - Floor(Xe(1,i,m)/Lb(1))*Lb(1) ) - ( Xe(1,i-1,m) - Floor(Xe(1,i-1,m)/Lb(1))*Lb(1)) ) .gt. 10 ) Then
+    !        write(1,"(A)") "ZONE"
+    !      end if
+    !   write(1,"(2F20.10)") Xe(:,i,m) - FLOOR(Xe(:,i,m)/Lb)*Lb
+    !      if (i .eq. Nb) Then
+    !        write(1,"(2F20.10)") Xe(:,1,m) - FLOOR(Xe(:,1,m)/Lb)*Lb
+    !      end if
+    !   end do
+    !end do
     
-    write(1,"(A)") "ZONE"
+    !write(1,"(A)") "ZONE"
 
-    do i = 1,Nw
-       write(1,"(2F20.10)") Xw(:,i)
-       if (i .eq. Int(Nw/2)) then
-         write(1,"(A)") "ZONE"
-       end if
-    end do
-    close(1)
-
-!write stretch terms
-    write(fn,"('./2DCell/D/stretch.',I10.10)")lt
-    open(1,file=fn)
-     do m = 1,Nm
-      do i = 1,Nb
-       write(1,"(F20.10)") Sqrt(stretch(1,i,m)**2+stretch(2,i,m)**2)
-      end do
-    end do
-    close(1)
-
-!write stretch terms
-    write(fn,"('./2DCell/D/bend.',I10.10)")lt
-    open(1,file=fn)
-     do m = 1,Nm
-      do i = 1,Nb
-       write(1,"(F20.10)") Sqrt(bend(1,i,m)**2+bend(2,i,m)**2)
-      end do
-    end do
-    close(1)
-
-!write total energy terms
-    write(fn,"('./2DCell/D/totE.',I10.10)")lt
-    open(1,file=fn)
-     do m = 1,Nm
-      do i = 1,Nb
-       write(1,"(F20.10)") Sqrt(totE(1,i,m)**2+totE(2,i,m)**2)
-      end do
-    end do
-    close(1)
-
-  open(unit=13, file='2DCell/D/hemat.out', ACTION="write", STATUS="replace")
-    write(13, '(F9.2)') 2*Pi*ro*Nm
-    write(13, '(F9.2)') Lb(1)*Lb(2)
-    write(13, '(F9.4)') 2*Pi*ro*Nm/(Lb(1)*Lb(2)) 
- close(13)
-
+    !do i = 1,Nw
+    !   write(1,"(2F20.10)") Xw(:,i)
+    !   if (i .eq. Int(Nw/2)) then
+    !     write(1,"(A)") "ZONE"
+    !   end if
+    !end do
+    !close(1)
 
   END SUBROUTINE xout
 
@@ -236,7 +177,7 @@ CONTAINS
     integer               :: i,m,n,k1,k2,j
 
 
-    write(fn,"('2DCell/D/specout.',I10.10)")lt
+    write(fn,"('D/specout.',I10.10)")lt
     open(1,file=fn)
     do m = 1,Nm
        x1 = X(1,:,m)
@@ -279,7 +220,7 @@ CONTAINS
 
     Xe(1,:,:) = Xe(1,:,:) - FLOOR( Xe(2,:,:)/Lb(2) )*MOD(Ueps*(t-T_sh_on),Lb(1))
 !    print *,"XD",Xe(1,1,1)
-    write(fn,"('./2DCell/D/Defeout.',I10.10)")lt
+    write(fn,"('./D/Defeout.',I10.10)")lt
     open(1,file=fn)
     do m = 1,Nm
        do i = 1,Nb
